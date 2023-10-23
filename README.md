@@ -1,4 +1,4 @@
-# generator-vscpp [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
+# generator-vscpp
 > A yeoman generator for cpp project in visual studio code
 
 ## Installation
@@ -10,27 +10,15 @@ npm install -g yo
 npm install -g generator-vscpp
 ```
 
-Then generate your new project:
+Now you can scaffold your very own cplusplus app:
 
 ```bash
+mkdir my-cpp-proj
+cd my-cpp-proj
 yo vscpp
+code .
 ```
-
-## Getting To Know Yeoman
-
- * Yeoman has a heart of gold.
- * Yeoman is a person with feelings and opinions, but is very easy to work with.
- * Yeoman can be too opinionated at times but is easily convinced not to be.
- * Feel free to [learn more about Yeoman](http://yeoman.io/).
 
 ## License
 
  © [compasty]()
-
-
-[npm-image]: https://badge.fury.io/js/generator-vscpp.svg
-[npm-url]: https://npmjs.org/package/generator-vscpp
-[travis-image]: https://travis-ci.com/compasty/generator-vscpp.svg?branch=master
-[travis-url]: https://travis-ci.com/compasty/generator-vscpp
-[daviddm-image]: https://david-dm.org/compasty/generator-vscpp.svg?theme=shields.io
-[daviddm-url]: https://david-dm.org/compasty/generator-vscpp
