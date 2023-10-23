@@ -4,7 +4,7 @@ const chalk = require('chalk');
 const yosay = require('yosay');
 
 module.exports = class extends Generator {
-  prompting() {
+  async prompting() {
     // Have Yeoman greet the user.
     this.log(
       yosay(
@@ -14,27 +14,82 @@ module.exports = class extends Generator {
 
     const prompts = [
       {
-        type: 'confirm',
-        name: 'someAnswer',
-        message: 'Would you like to enable this option?',
-        default: true
+        type: 'input',
+        name: 'name',
+        message: 'Your project name',
+        default: this.appname
+      },
+      {
+        type: 'checkbox',
+        name: 'libs',
+        message: 'Which libs do you want to add in this project?',
+        choices: [
+          {
+            name: 'benchmark',
+            value: 'benchmark' 
+          },
+          {
+            name: 'fmt',
+            value: 'fmt'
+          },
+          {
+            name: 'spdlog',
+            value: 'spdlog'
+          },
+          {
+            name: 'json',
+            value: 'nlohmann_json'
+          },
+          {
+            name: 'yaml',
+            value: 'yaml-cpp'
+          }
+        ]
       }
     ];
 
-    return this.prompt(prompts).then(props => {
-      // To access props later use this.props.someAnswer;
-      this.props = props;
-    });
+    this.answers = await this.prompt(prompts);
   }
 
   writing() {
-    this.fs.copy(
-      this.templatePath('dummyfile.txt'),
-      this.destinationPath('dummyfile.txt')
+    const includeLibs = [];
+    const libCmakeFiles = [];
+    if (this.answers.libs && this.answers.libs.length > 0) {
+      for (const lib of this.answers.libs) {
+        includeLibs.push(`include(${lib})`);
+        libCmakeFiles.push(`cmake/${lib}.cmake`);
+      }
+    }
+    this.fs.copyTpl(
+      this.templatePath('CMakeLists.txt'),
+      this.destinationPath('CMakeLists.txt'),
+      {includeLibs: includeLibs.join('\n')}
     );
-  }
-
-  install() {
-    this.installDependencies();
+    this.fs.copy(
+      this.templatePath('.gitignore'),
+      this.destinationPath('.gitignore')
+    );
+    this.fs.copy(
+      this.templatePath('cmake/GoogleTest.cmake'),
+      this.destinationPath('cmake/GoogleTest.cmake')
+    );
+    this.fs.copy(
+      this.templatePath('include/'),
+      this.destinationPath('include/')
+    );
+    this.fs.copy(
+      this.templatePath('src/'),
+      this.destinationPath('src/')
+    );
+    this.fs.copy(
+      this.templatePath('tests/'),
+      this.destinationPath('tests/')
+    );
+    for (const cmakeFile of libCmakeFiles) {
+      this.fs.copy(
+        this.templatePath(cmakeFile),
+        this.destinationPath(cmakeFile)
+      );
+    }
   }
 };
